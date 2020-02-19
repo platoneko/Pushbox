@@ -31,5 +31,5 @@ bne $t3,$zero,lb_branch
 
 
 
-addi   $v0,$zero,10         # system call for exit
+addi   $v0,$zero,50         # system call for exit
 syscall                  # we are out of here.   

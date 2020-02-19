@@ -10,5 +10,5 @@ addi $s1,$s1,1
 bltz $s1,bltz_branch     #当前指令
 
 
-addi   $v0,$zero,10    
+addi   $v0,$zero,50    
 syscall                  #暂停或退出
