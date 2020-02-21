@@ -21,7 +21,7 @@ jmp_next2:
   addi $s3,$zero, 12
 jmp_next3:
   jal jmp_func
-  addi $v0,$zero,10         # system call for exit
+  addi $v0,$zero,50         # system call for exit
   nop
   nop
   nop
