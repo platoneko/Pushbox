@@ -292,7 +292,7 @@ sort_next:
  addi $s1,$zero,60
  bne $s0, $s1, sort_loop
 
- addi   $v0,$zero,50         # system call for pause
+ addi   $v0,$zero,10         # system call for pause
  syscall                  # we are out of here.   
  
  
@@ -300,25 +300,95 @@ sort_next:
 # insert your ccmb benchmark program here!!!
 #############################################
 
-j benchmark_start       #delete this instruction for ccmb bencmark
+# j benchmark_start       #delete this instruction for ccmb bencmark
 #C1 instruction benchmark
+.text
+addi $t0,$zero,-1     #
+addi $s1,$zero, 0x7777     #
 
+add $a0,$0,$s1           
+addi $v0,$zero,34         # system call for print
+syscall                  # print
+
+addi $t3,$zero, 0x10
+
+xor_branch:
+xor $s1,$s1,$t0     #先移1位
+add $a0,$0,$s1          
+addi $v0,$zero,34         # system call for print
+syscall                  # print
+addi $t3,$t3, -1    
+bne $t3,$zero,xor_branch   #循环8次
 
 
 #C2 instruction benchmark
+.text
+addi $t3,$zero,  0x8
 
+lui_branch:
+lui $s1,  0xFEDC 
+ori $s1,$s1, 0xffff
+add $a0,$0,$s1          
+addi $v0,$zero,34         # system call for print
+syscall    
+lui $s1,  0xBA98
+add $a0,$0,$s1          
+syscall    
+lui $s1,  0x7654     
+add $a0,$0,$s1          
+syscall    
+lui $s1,  0x3210     
+add $a0,$0,$s1          
+syscall    
+                           # print
+addi $t3,$t3, -1    
+bne $t3,$zero,lui_branch
 
 
 #Mem instruction benchmark
+.text
+addi $t1,$zero,0     #init_addr 
+addi $t3,$zero,16     #counter
 
+#预先写入数据，实际是按字节顺序存入 0x81,82,84,86,87,88,89.......等差数列
+ori $s1,$zero, 0x8483  #
+addi $s2,$zero, 0x0404  #
+sll $s1,$s1,16
+sll $s2,$s2,16
+ori $s1,$s1, 0x8281  #    注意一般情况下MIPS采用大端方式
+addi $s2,$s2, 0x0404  #   init_data= 0x84838281 next_data=init_data+ 0x04040404
+lb_store:
+sw $s1,($t1)
+add $s1,$s1,$s2   #data +1
+addi $t1,$t1,4    # addr +4  
+addi $t3,$t3,-1   #counter
+bne $t3,$zero,lb_store
+
+addi $t3,$zero,32   #循环次数
+addi $t1,$zero,0    # addr 
+lb_branch:
+lb $s1,($t1)         #测试指令
+add $a0,$0,$s1          
+addi $v0,$zero,34         #输出
+syscall                  
+addi $t1,$t1, 1    
+addi $t3,$t3, -1    
+bne $t3,$zero,lb_branch
 
 
 
 #Branch instruction benchmark
-
+.text
+addi $s1,$zero,-15       #初始值
+bltz_branch:
+add $a0,$0,$s1          
+addi $v0,$zero,34         
+syscall                  #输出当前值
+addi $s1,$s1,1 
+bltz $s1,bltz_branch     #当前指令
 
                  
- addi   $v0,$zero,10         # system call for exit
+ addi   $v0,$zero,50         # system call for exit
  syscall                  # we are out of here.   
  
  #MIPS处理器实现中请用停机指令实现syscall

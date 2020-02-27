@@ -11,8 +11,8 @@ sw $s0, 0($s0)
 sw $s1, 4($s0)
 sw $s2, 8($s0)
 sw $s3, 12($s0)
-addi $v0,$zero, 50         # system call for exit
-addi $s1,$zero, 0            #消除相关性
-addi $s2,$zero, 0
-addi $s3,$zero, 0
+addi $v0,$zero, 10         # system call for exit
+nop
+nop
+nop
 syscall                   # we are out of here.   
